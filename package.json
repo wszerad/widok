@@ -1,0 +1,46 @@
+{
+	"name": "cargo",
+	"version": "0.0.1",
+	"description": "",
+	"author": "",
+	"license": "MIT",
+	"scripts": {
+		"dev": "ts-node-dev --respawn ./src/cargo.ts",
+		"start": "parcel serve src/index.html -d dist --public-url /dist/ --open"
+	},
+	"dependencies": {
+		"@vue/reactivity": "^3.0.0-alpha.1",
+		"@vue/runtime-core": "^3.0.0-alpha.1",
+		"parcel-bundler": "^1.12.4"
+	},
+	"devDependencies": {
+		"@types/jest": "^24.0.25",
+		"@types/node": "^13.1.4",
+		"jest": "^24.9.0",
+		"ts-jest": "^24.3.0",
+		"ts-node-dev": "^1.0.0-pre.44",
+		"tslint": "^5.20.1",
+		"typescript": "^3.7.4"
+	},
+	"jest": {
+		"globals": {
+			"ts-jest": {
+				"isolatedModules": false,
+				"diagnostics": true
+			}
+		},
+		"preset": "ts-jest",
+		"moduleFileExtensions": [
+			"js",
+			"json",
+			"ts"
+		],
+		"rootDir": "src",
+		"testRegex": ".spec.ts$",
+		"transform": {
+			"^.+\\.(t|j)s$": "ts-jest"
+		},
+		"coverageDirectory": "../coverage",
+		"testEnvironment": "node"
+	}
+}
