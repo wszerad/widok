@@ -1,3 +1,5 @@
+import {Context} from "./context";
+
 const target: any =
 	typeof window !== 'undefined'
 		? window
@@ -9,7 +11,7 @@ const devtoolHook = target.__VUE_DEVTOOLS_GLOBAL_HOOK__;
 
 let rootStore;
 
-export function useStoreDevtools(store) {
+export function useStoreDevtools(context: Context) {
 	if (!devtoolHook) return;
 
 	if (!rootStore) {
@@ -20,7 +22,7 @@ export function useStoreDevtools(store) {
 			_modulesNamespaceMap: {},
 			_modules: {
 				get(name: string) {
-					return name in rootStore._modulesNamespaceMap
+					return name in rootStore._modulesNamespaceMap;
 				},
 			},
 			state: {},
@@ -31,31 +33,34 @@ export function useStoreDevtools(store) {
 		devtoolHook.emit('vuex:init', rootStore)
 	}
 
-	rootStore.state[store.name] = store.state;
+	rootStore.state[context.name] = context.instance;
 
 	// tell the devtools we added a module
-	rootStore.registerModule(store.name, store);
+	rootStore.registerModule(context.name, context);
 
-	Object.defineProperty(rootStore.state, store.name, {
-		get: () => store.state,
-		set: state => (store.state = state),
+	Object.defineProperty(rootStore.state, context.name, {
+		get() {
+			return context.instance.state;
+		},
+		set(state) {
+			context.replaceState(state);
+        }
 	});
 
-	rootStore._modulesNamespaceMap[store.name + '/'] = true;
+	rootStore._modulesNamespaceMap[context.name + '/'] = true;
 
 	devtoolHook.on('vuex:travel-to-state', targetState => {
-		store.state = targetState[store.name]
+        context.replaceState(targetState[context.name]);
 	});
 
-	// store.subscribe((mutation, state) => {
-	// 	rootStore.state[store.id] = state
-	// 	devtoolHook.emit(
-	// 		'vuex:mutation',
-	// 		{
-	// 			...mutation,
-	// 			type: `[${mutation.storeName}] ${mutation.type}`,
-	// 		},
-	// 		rootStore.state
-	// 	)
-	// })
+    context.subscribe((mutation, state) => {
+		devtoolHook.emit(
+			'vuex:mutation',
+			{
+				...mutation,
+				type: `[${context.name}] ${mutation.type}`,
+			},
+			rootStore.state
+		)
+	})
 }
