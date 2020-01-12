@@ -9,9 +9,11 @@
 		"start": "parcel serve src/index.html -d dist --public-url /dist/ --open"
 	},
 	"dependencies": {
+		"lodash": "^4.17.15",
 		"@vue/reactivity": "^3.0.0-alpha.1",
 		"@vue/runtime-core": "^3.0.0-alpha.1",
-		"parcel-bundler": "^1.12.4"
+		"parcel-bundler": "^1.12.4",
+		"vue": "^2.6.11"
 	},
 	"devDependencies": {
 		"@types/jest": "^24.0.25",

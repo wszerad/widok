@@ -15,6 +15,10 @@ export class Context {
         public name: string,
 	) {}
 
+	get state() {
+		return this.instance;
+	}
+
 	replaceState(state: any) {
 
 	}
@@ -39,9 +43,9 @@ export class Context {
 	// commit(type: string, payload?: any);
 	// commit(mutationOrType, payload?) {
 	// 	if (typeof mutationOrType === 'string') {
-	// 		this.instance[mutationOrType](payload);
+	// 		this.state[mutationOrType](payload);
 	// 	} else {
-	// 		this.instance[mutationOrType.type](mutationOrType.payload);
+	// 		this.state[mutationOrType.type](mutationOrType.payload);
 	// 	}
 	// }
 	//
@@ -49,9 +53,9 @@ export class Context {
     // dispatch(type: string, payload?: any);
 	// dispatch(actionOrType, payload?) {
     //     if (typeof actionOrType === 'string') {
-    //         this.instance[actionOrType](payload);
+    //         this.state[actionOrType](payload);
     //     } else {
-    //         this.instance[actionOrType.type](actionOrType.payload);
+    //         this.state[actionOrType.type](actionOrType.payload);
     //     }
 	// }
 }

@@ -11,45 +11,49 @@ const devtoolHook = target.__VUE_DEVTOOLS_GLOBAL_HOOK__;
 
 let rootStore;
 
+class RootStore {
+	_devtoolHook = devtoolHook;
+	_vm = { $options: { computed: {} } };
+	_mutations = {};
+	_modules = {
+		get(name: string) {
+			console.log('get module', name);
+			return name.slice(0, -1) in this.modules;
+		}
+	};
+	state;
+	modules = {};
+
+	constructor() {
+		const self = this;
+		this.state = new Proxy({}, {
+			get(target, p) {
+				if (p in this.modules) {
+					return self.modules[p];
+				}
+				return target[p];
+			}
+		});
+	}
+
+	replaceState() {}
+	registerModule(...args: any[]) {}
+	unregisterModule() {}
+}
+
 export function useStoreDevtools(context: Context) {
 	if (!devtoolHook) return;
 
 	if (!rootStore) {
-		rootStore = {
-			_devtoolHook: devtoolHook,
-			_vm: { $options: { computed: {} } },
-			_mutations: {},
-			_modulesNamespaceMap: {},
-			_modules: {
-				get(name: string) {
-					return name in rootStore._modulesNamespaceMap;
-				},
-			},
-			state: {},
-			replaceState: () => {},
-			registerModule: () => {},
-			unregisterModule: () => {},
-		};
-		devtoolHook.emit('vuex:init', rootStore)
+		rootStore = new RootStore();
+		devtoolHook.emit('vuex:init', rootStore);
 	}
 
-	rootStore.state[context.name] = context.instance;
-
-	// tell the devtools we added a module
+	rootStore.modules[context.name] = context;
 	rootStore.registerModule(context.name, context);
 
-	Object.defineProperty(rootStore.state, context.name, {
-		get() {
-			return context.instance.state;
-		},
-		set(state) {
-			context.replaceState(state);
-        }
-	});
-
-	rootStore._modulesNamespaceMap[context.name + '/'] = true;
-
 	devtoolHook.on('vuex:travel-to-state', targetState => {
+		console.log('replace state', targetState);
         context.replaceState(targetState[context.name]);
 	});
 

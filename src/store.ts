@@ -23,13 +23,13 @@ export function watcher(state) {
 
     Object
         .entries(toRefs(state))
-        .forEach(([key, ref]) => {
+        .forEach(([type, ref]) => {
             const runner = effect(() => ref.value, {
                 computed: true,
                 lazy: false,
                 scheduler(c) {
                     if (!context.mutation) {
-                        console.log(runner());
+                    	context.sendMutation({type, payload: runner()});
                     }
                 }
             });
@@ -47,6 +47,7 @@ export function action<T extends Function>(map: T): T {
     }) as any;
 }
 
+// get function name from setup by pairing function => var
 export function mutation<T extends Function>(map: T): T {
     const context = getContext();
     const type = map.name;
@@ -63,7 +64,6 @@ export function mutation<T extends Function>(map: T): T {
 export function getter<T extends Function>(map: ComputedGetter<T>): ComputedRef<T> {
     const context = getContext();
     context.getters[map.name] = computed(map);
-
     return context.getters[map.name]
 }
 
