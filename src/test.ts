@@ -1,40 +1,35 @@
-import { ref } from '@vue/reactivity';
-import { watch } from '@vue/runtime-core';
-import Vue from 'vue';
-import { action, cargo, mutation, store } from './store';
+import {action, cargo, getter, mutation, store} from "./store";
+import Vue from "vue";
+
+const v = new Vue({
+    template: '<span>test</span>'
+});
+
+v.$mount('#app');
 
 function test(name: string) {
-	const state = cargo({
-		t: 3
-	});
+    const s = cargo({
+        tt: '5'
+    });
 
-	const send = action(function action() {
-		state.t = 5;
-	});
+    const send = action(function action() {
+        s.tt = '6';
+    });
 
-	const edit = mutation(function edit() {
-		state.t = state.t + 1;
-	});
+    const edit = mutation(function mutation() {
+        s.tt = '7';
+    });
 
-	return {
-		state,
-		send, edit
-	};
+    const ss = getter(function ss() {
+        return s.tt + 'x';
+    });
+
+    return {
+        state: s,
+        send, edit, ss
+    };
 }
-
-new Vue({
-	el: '#app',
-	template: '<div></div>'
-});
 
 const c = store('test', test);
 console.log(c);
-
-
-// const k = ref({tt: 6});
-// watch(k, (x, y) => console.log(x),
-// 	{
-// 		deep: true,
-// 		flush: 'sync',
-// 	});
-// k.value.tt = 7;
+c.state.tt = '4';

@@ -1,15 +1,15 @@
-import {Subsription} from "./subsription";
-import {Action, Mutation} from "./definietions";
+import {Action, Subscription} from "./utils";
+import {Mutation} from "./utils";
+import {ComputedRef} from "@vue/reactivity";
 
 export class Context {
-    private _subscribe = new Subsription<Mutation>();
-    private _subscribeAction = new Subsription<Action>();
+    private _subscribe = new Subscription<Mutation>();
+    private _subscribeAction = new Subscription<Action>();
 
     public mutation = false;
-    public getter = false;
-
     public instance: any = null;
-    public getters = {};
+    public getters = new Map<string, ComputedRef<any>>();
+    public mutations = new Map<string, Function>();
 
 	constructor(
         public name: string,
@@ -20,7 +20,7 @@ export class Context {
 	}
 
 	replaceState(state: any) {
-
+		console.log(state);
 	}
 
 	sendAction(action: Action) {
@@ -38,26 +38,6 @@ export class Context {
     subscribe(cb) {
 		this._subscribe.subscribe(cb);
 	}
-
-	// commit(mutation: Mutation);
-	// commit(type: string, payload?: any);
-	// commit(mutationOrType, payload?) {
-	// 	if (typeof mutationOrType === 'string') {
-	// 		this.state[mutationOrType](payload);
-	// 	} else {
-	// 		this.state[mutationOrType.type](mutationOrType.payload);
-	// 	}
-	// }
-	//
-    // dispatch(action: Action);
-    // dispatch(type: string, payload?: any);
-	// dispatch(actionOrType, payload?) {
-    //     if (typeof actionOrType === 'string') {
-    //         this.state[actionOrType](payload);
-    //     } else {
-    //         this.state[actionOrType.type](actionOrType.payload);
-    //     }
-	// }
 }
 
 let context: Context = null;
