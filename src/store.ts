@@ -29,7 +29,10 @@ export function watcher(state) {
                 lazy: false,
                 scheduler(c) {
                     if (!context.mutation) {
-                        console.log(runner());
+                        context.sendMutation({
+                            type: key,
+                            payload: runner()
+                        });
                     }
                 }
             });
@@ -40,30 +43,37 @@ export function action<T extends Function>(map: T): T {
     const context = getContext();
     const type = map.name;
 
-    return ((payload) => {
+    function action(payload) {
         const ret = map(payload);
         context.sendAction({type, payload});
         return ret;
-    }) as any;
+    }
+
+    return action as any;
 }
 
 export function mutation<T extends Function>(map: T): T {
     const context = getContext();
     const type = map.name;
 
-    return ((payload) => {
+    function mutation(payload) {
         context.mutation = true;
         const ret = map(payload);
         context.sendMutation({type, payload});
         context.mutation = false;
         return ret;
-    }) as any;
+    }
+
+    context.mutations.set(type, mutation);
+    return mutation as any;
 }
 
-export function getter<T extends Function>(map: ComputedGetter<T>): ComputedRef<T> {
+export function getter<T>(map: ComputedGetter<T>): ComputedRef<T> {
     const context = getContext();
-    context.getters[map.name] = computed(map);
+    const getter = computed(map);
 
-    return context.getters[map.name]
+    context.getters.set(map.name, getter);
+
+    return getter;
 }
 
