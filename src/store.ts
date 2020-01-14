@@ -1,16 +1,18 @@
 import {computed, ComputedGetter, ComputedRef, effect, reactive, toRefs} from '@vue/reactivity';
-import {getContext, setContext} from './context';
-import {useStoreDevtools} from "./devtools";
+import {useStoreDevtools} from './devtools';
+import {Context} from './Context';
+import {functionDeclaration} from "@babel/types";
+import {FunctionMap, functionsDecorator} from "./utils";
 
 export function store<T>(name: string, setup: (name: string) => T) {
-    const context = setContext(name);
+    const context = Context.init(name);
     const instance = setup(name);
     useStoreDevtools(context);
     return instance;
 }
 
 export function cargo<T>(map: T): T {
-    const context = getContext();
+    const context = Context.get();
     const state = reactive(map as any);
 
     context.instance = state;
@@ -19,7 +21,7 @@ export function cargo<T>(map: T): T {
 }
 
 export function watcher(state) {
-    const context = getContext();
+    const context = Context.get();
 
     Object
         .entries(toRefs(state))
@@ -39,9 +41,28 @@ export function watcher(state) {
         });
 }
 
-export function action<T extends Function>(map: T): T {
-    const context = getContext();
-    const type = map.name;
+export function actions<T extends FunctionMap>(actions: T): T {
+    return functionsDecorator(actions, action);
+}
+
+export function addContext<T extends Function>(name: string, fuu: T): T;
+export function addContext<T extends Function>(fuu: T, k: any): T;
+export function addContext(name, fuu) {
+    name = fuu ? name : name.name;
+    fuu = fuu || name;
+
+    if (!name) {
+        throw new Error('');
+    }
+
+    const context = Context.get();
+
+    return () => {};
+}
+
+export function action<T extends Function>(map: T, name?: string): T {
+    const context = Context.get();
+    const type = name || map.name;
 
     function action(payload) {
         const ret = map(payload);
@@ -52,9 +73,9 @@ export function action<T extends Function>(map: T): T {
     return action as any;
 }
 
-export function mutation<T extends Function>(map: T): T {
-    const context = getContext();
-    const type = map.name;
+export function mutation<T extends Function>(map: T, name?: string): T {
+    const context = Context.get();
+    const type = name || map.name;
 
     function mutation(payload) {
         context.mutation = true;
@@ -68,8 +89,9 @@ export function mutation<T extends Function>(map: T): T {
     return mutation as any;
 }
 
-export function getter<T>(map: ComputedGetter<T>): ComputedRef<T> {
-    const context = getContext();
+export function getter<T>(map: ComputedGetter<T>, name?: string): ComputedRef<T> {
+    const context = Context.get();
+    const type = name || map.name;
     const getter = computed(map);
 
     context.getters.set(map.name, getter);

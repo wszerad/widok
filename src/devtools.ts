@@ -1,4 +1,4 @@
-import {Context} from "./context";
+import {Context} from "./Context";
 import {RootStore} from "./RootStore";
 import {devtoolHook} from "./utils";
 
@@ -27,7 +27,7 @@ export function useStoreDevtools(context: Context) {
 				...mutation,
 				type: `[${context.name}] ${mutation.type}`,
 			},
-			rootStore.state
+			rootStore.fakeRootStore.state
 		)
 	})
 }

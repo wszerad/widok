@@ -1,4 +1,4 @@
-import {action, cargo, getter, mutation, store} from "./store";
+import {action, cargo, getter, mutation, store} from "../src/store";
 import Vue from "vue";
 
 const v = new Vue({
@@ -27,6 +27,32 @@ function test(name: string) {
     return {
         state: s,
         send, edit, ss
+    };
+}
+
+
+function test(name: string) {
+    const s = cargo({
+        tt: '5'
+    });
+
+    function action() {
+        s.tt = '6';
+    }
+
+    function mutation() {
+        s.tt = '7';
+    }
+
+    const ss = getter(() => {
+        return s.tt + 'x';
+    });
+
+    return {
+        state: s,
+        mutations({}),
+        action,
+        mutation
     };
 }
 

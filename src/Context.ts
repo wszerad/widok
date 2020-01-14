@@ -2,6 +2,8 @@ import {Action, Subscription} from "./utils";
 import {Mutation} from "./utils";
 import {ComputedRef} from "@vue/reactivity";
 
+let context: Context = null;
+
 export class Context {
     private _subscribe = new Subscription<Mutation>();
     private _subscribeAction = new Subscription<Action>();
@@ -38,15 +40,13 @@ export class Context {
     subscribe(cb) {
 		this._subscribe.subscribe(cb);
 	}
-}
 
-let context: Context = null;
+	static init(name: string) {
+        context = new Context(name);
+        return context;
+	}
 
-export function setContext(name: string) {
-	context = new Context(name);
-	return context;
-}
-
-export function getContext() {
-	return context;
+	static get() {
+		return context;
+	}
 }
