@@ -1,6 +1,16 @@
-import {propertyDescription} from "./utils";
 import {Context} from "./Context";
 import {VuexFakeStore} from "./VuexFakeStore";
+
+export function propertyDescription(as: { target: any, key: string, remove: boolean, def: any }) {
+    if (as.remove) {
+        delete as.target[as.key];
+    } else {
+        Object.defineProperty(as.target, as.key, {
+            enumerable: true,
+            ...as.def
+        });
+    }
+}
 
 export class RootStore {
     modules = new Map<string, Context>();

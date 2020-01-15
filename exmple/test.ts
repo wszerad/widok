@@ -1,5 +1,7 @@
-import {action, cargo, getter, mutation, store} from "../src/store";
+import {cargo, store} from "../src/store";
 import Vue from "vue";
+import {action, getter, mutation} from "../src/wrapers";
+import {actions, mutations} from "../src/groups";
 
 const v = new Vue({
     template: '<span>test</span>'
@@ -12,32 +14,8 @@ function test(name: string) {
         tt: '5'
     });
 
-    const send = action(function action() {
-        s.tt = '6';
-    });
-
-    const edit = mutation(function mutation() {
-        s.tt = '7';
-    });
-
-    const ss = getter(function ss() {
-        return s.tt + 'x';
-    });
-
-    return {
-        state: s,
-        send, edit, ss
-    };
-}
-
-
-function test(name: string) {
-    const s = cargo({
-        tt: '5'
-    });
-
-    function action() {
-        s.tt = '6';
+    function action(ss: string) {
+        s.tt = ss;
     }
 
     function mutation() {
@@ -50,12 +28,17 @@ function test(name: string) {
 
     return {
         state: s,
-        mutations({}),
-        action,
-        mutation
+        ...mutations({
+            mutation
+        }),
+        ...actions({
+            action
+        }),
+        ss
     };
 }
 
 const c = store('test', test);
+c.action('d')
 console.log(c);
 c.state.tt = '4';

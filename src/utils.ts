@@ -36,25 +36,3 @@ export interface Action<P = any> {
     payload: P;
 }
 
-export interface FunctionMap {
-    [key: string]: Function
-}
-
-export function propertyDescription(as: { target: any, key: string, remove: boolean, def: any }) {
-    if (as.remove) {
-        delete as.target[as.key];
-    } else {
-        Object.defineProperty(as.target, as.key, {
-            enumerable: true,
-            ...as.def
-        });
-    }
-}
-
-export function functionsDecorator<T extends FunctionMap>(object: T, decorator: Function): T {
-    return Object.entries(object)
-        .reduce((map, [key, fuu]) => {
-            map[key] = decorator(fuu);
-            return map;
-        }, {}) as any;
-}
