@@ -35,3 +35,14 @@ export interface Action<P = any> {
     type: string;
     payload: P;
 }
+
+export function assignProperty(as: {target: any, key: string, remove: boolean, def: any}) {
+	if (as.remove) {
+		delete as.target[as.key];
+	} else {
+		Object.defineProperty(as.target, as.key, {
+			enumerable: true,
+			...as.def
+		});
+	}
+}

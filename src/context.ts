@@ -1,22 +1,23 @@
-import {Action, Subscription} from "./utils";
-import {Mutation} from "./utils";
-import {ComputedRef} from "@vue/reactivity";
+import { Action, Subscription } from './utils';
+import { Mutation } from './utils';
+import { ComputedRef, Ref } from '@vue/reactivity';
 
 export class Context {
-    private _subscribe = new Subscription<Mutation>();
-    private _subscribeAction = new Subscription<Action>();
+	private _subscribe = new Subscription<Mutation>();
+	private _subscribeAction = new Subscription<Action>();
 
-    public mutation = false;
-    public instance: any = null;
-    public getters = new Map<string, ComputedRef<any>>();
-    public mutations = new Map<string, Function>();
+	public mutation = false;
+	public instance: Ref = null;
+	public getters = new Map<string, ComputedRef>();
+	public mutations = new Map<string, Function>();
 
 	constructor(
-        public name: string,
-	) {}
+		public name: string,
+	) {
+	}
 
 	get state() {
-		return this.instance;
+		return this.instance.value;
 	}
 
 	replaceState(state: any) {
@@ -24,18 +25,18 @@ export class Context {
 	}
 
 	sendAction(action: Action) {
-        this._subscribeAction.next(action);
+		this._subscribeAction.next(action);
 	}
 
-    subscribeAction(cb) {
+	subscribeAction(cb) {
 		this._subscribeAction.subscribe(cb);
 	}
 
 	sendMutation(mutation: Mutation) {
-        this._subscribe.next(mutation);
+		this._subscribe.next(mutation);
 	}
 
-    subscribe(cb) {
+	subscribe(cb) {
 		this._subscribe.subscribe(cb);
 	}
 }
