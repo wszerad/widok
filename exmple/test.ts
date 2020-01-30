@@ -1,44 +1,38 @@
-import {cargo, store} from "../src/store";
-import Vue from "vue";
-import {action, getter, mutation} from "../src/wrapers";
-import {actions, mutations} from "../src/groups";
+import { computed, ref } from '@vue/reactivity';
+import { store } from '../src/store';
+import Vue from 'vue';
+import { action } from '../src/wrappers';
 
 const v = new Vue({
-    template: '<span>test</span>'
+	template: '<span>test</span>'
 });
 
 v.$mount('#app');
 
 function test(name: string) {
-    const s = cargo({
-        tt: '5'
-    });
+	const s = ref(5);
 
-    function action(ss: string) {
-        s.tt = ss;
-    }
+	const act = action(function action(ss: number) {
+		s.value = ss;
+	});
 
-    function mutation() {
-        s.tt = '7';
-    }
+	function mutation() {
+		s.value = 7;
+	}
 
-    const ss = getter(() => {
-        return s.tt + 'x';
-    });
+	const ss = computed(() => {
+		return s.value + 'x';
+	});
 
-    return {
-        state: s,
-        ...mutations({
-            mutation
-        }),
-        ...actions({
-            action
-        }),
-        ss
-    };
+	return {
+		s,
+		ss,
+		mutation,
+		act
+	};
 }
 
 const c = store('test', test);
-c.action('d')
+c.act(2);
 console.log(c);
-c.state.tt = '4';
+c.s.value = 7;

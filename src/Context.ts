@@ -1,6 +1,6 @@
+import { ComputedRef, Ref } from '@vue/reactivity';
 import { Action, Subscription } from './utils';
 import { Mutation } from './utils';
-import { ComputedRef, Ref } from '@vue/reactivity';
 
 let context: Context = null;
 
@@ -23,6 +23,7 @@ export class Context {
 	}
 
 	replaceState(state: any) {
+		// TODO check state traveling (unconverting ref)
 		console.log(state);
 	}
 
