@@ -1,7 +1,6 @@
 import { computed, ref } from '@vue/reactivity';
 import { store } from '../src/store';
 import Vue from 'vue';
-import { action } from '../src/wrappers';
 
 const v = new Vue({
 	template: '<span>test</span>'
@@ -9,12 +8,8 @@ const v = new Vue({
 
 v.$mount('#app');
 
-function test(name: string) {
+function test() {
 	const s = ref(5);
-
-	const act = action(function action(ss: number) {
-		s.value = ss;
-	});
 
 	function mutation() {
 		s.value = 7;
@@ -32,12 +27,21 @@ function test(name: string) {
 		s,
 		ss,
 		mutation,
-		act,
 		test
 	};
 }
 
-const c = store('test', test);
-c.act(2);
-console.log(c);
-c.s.value = 7;
+function testWithActions(state) {
+	return {
+		tet() {
+			state.test(6);
+			setTimeout(() => {
+				state.test(8);
+			}, 10);
+		},
+		...state
+    };
+}
+
+const c = store('test', test, testWithActions);
+c.tet();

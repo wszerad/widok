@@ -3,11 +3,11 @@ import { useStoreDevtools } from './devtools';
 import { Context } from './Context';
 import { getter, metaType, mutation } from './wrappers';
 
-export function store<T>(name: string, setup: (name: string) => T): T {
+export function store<T, R>(name: string, setup: (name: string) => T, actions: (state: T, name: string) => R = () => ({} as R)): T & R {
 	const context = Context.init(name);
 	const instance = setupWrapper(setup(name));
 	useStoreDevtools(context);
-	return instance;
+	return Object.assign(instance, actions(instance, name));
 }
 
 function setupWrapper<T>(exp: T): T {
