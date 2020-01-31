@@ -3,7 +3,7 @@ import { useStoreDevtools } from './devtools';
 import { Context } from './Context';
 import { getter, metaType, mutation } from './wrappers';
 
-export function store<T>(name: string, setup: (name: string) => T) {
+export function store<T>(name: string, setup: (name: string) => T): T {
 	const context = Context.init(name);
 	const instance = setupWrapper(setup(name));
 	useStoreDevtools(context);
@@ -35,18 +35,26 @@ function setupWrapper<T>(exp: T): T {
 }
 
 function watchRef(key: string, ref: Ref<any>) {
-	// TODO add to instance
 	const context = Context.get();
 	const runner = effect(() => ref.value, {
 		computed: true,
 		lazy: false,
 		scheduler(c) {
-			if (!context.mutation) {
+			const value = runner();
+			if (!context.mutation && !context.replace) {
 				context.sendMutation({
 					type: key,
-					payload: runner()
+					payload: value
 				});
 			}
 		}
 	});
+
+	context.refs[key] = ref;
+	Object.defineProperty(context.instance, key, {
+		enumerable: true,
+		get() {
+			return ref.value;
+		}
+	})
 }

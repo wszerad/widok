@@ -1,4 +1,4 @@
-import { ComputedRef, Ref } from '@vue/reactivity';
+import { ComputedRef } from '@vue/reactivity';
 import { Action, Subscription } from './utils';
 import { Mutation } from './utils';
 
@@ -8,8 +8,11 @@ export class Context {
 	private _subscribe = new Subscription<Mutation>();
 	private _subscribeAction = new Subscription<Action>();
 
+	public replace = false;
 	public mutation = false;
-	public instance: Ref = null;
+	public instance = {};
+
+	public refs = {};
 	public getters = new Map<string, ComputedRef>();
 	public mutations = new Map<string, Function>();
 
@@ -19,12 +22,16 @@ export class Context {
 	}
 
 	get state() {
-		return this.instance.value;
+		return this.instance;
 	}
 
 	replaceState(state: any) {
-		// TODO check state traveling (unconverting ref)
-		console.log(state);
+		this.replace = true;
+		Object.entries(state)
+			.forEach(([key, value]) => {
+				this.refs[key].value = value;
+			});
+		this.replace = false;
 	}
 
 	sendAction(action: Action) {

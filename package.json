@@ -6,11 +6,11 @@
 	"license": "MIT",
 	"scripts": {
 		"dev": "ts-node-dev --respawn ./src/cargo.ts",
-		"start": "parcel serve src/index.html -d dist --public-url /dist/ --open"
+		"start": "parcel serve example/index.html -d dist --public-url /dist/ --open"
 	},
 	"dependencies": {
-		"@vue/reactivity": "^3.0.0-alpha.1",
-		"@vue/runtime-core": "^3.0.0-alpha.1",
+		"@vue/reactivity": "^3.0.0-alpha.4",
+		"@vue/runtime-core": "^3.0.0-alpha.4",
 		"parcel-bundler": "^1.12.4",
 		"vue": "^2.6.11"
 	},

@@ -20,6 +20,10 @@ function test(name: string) {
 		s.value = 7;
 	}
 
+	function test(v: number) {
+		s.value = v;
+    }
+
 	const ss = computed(() => {
 		return s.value + 'x';
 	});
@@ -28,7 +32,8 @@ function test(name: string) {
 		s,
 		ss,
 		mutation,
-		act
+		act,
+		test
 	};
 }
 

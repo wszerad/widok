@@ -1,4 +1,5 @@
 import { Context } from './Context';
+import {ComputedRef} from '@vue/reactivity';
 
 export const metaType = Symbol('metaType');
 export enum MetaTypes {
@@ -50,7 +51,7 @@ export function mutation(type: string, fuu: Function) {
 	return mutation;
 }
 
-export function getter(type: string, fuu: Function) {
+export function getter(type: string, fuu: ComputedRef) {
 	Context.get().getters.set(type, fuu);
 	return fuu;
 }
