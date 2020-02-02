@@ -1,4 +1,4 @@
-import { ComputedRef } from '@vue/reactivity';
+import { ComputedRef, Ref } from '@vue/reactivity';
 import { Action, Subscription } from './utils';
 import { Mutation } from './utils';
 
@@ -12,7 +12,7 @@ export class Context {
 	public mutation = false;
 	public instance = {};
 
-	public refs = {};
+	public refs = new Map<string, Ref>();
 	public getters = new Map<string, ComputedRef>();
 	public mutations = new Map<string, Function>();
 
@@ -29,7 +29,7 @@ export class Context {
 		this.replace = true;
 		Object.entries(state)
 			.forEach(([key, value]) => {
-				this.refs[key].value = value;
+				this.refs.get(key).value = value;
 			});
 		this.replace = false;
 	}
@@ -50,12 +50,19 @@ export class Context {
 		this._subscribe.subscribe(cb);
 	}
 
+	static clear() {
+		context = null;
+	}
+
 	static init(name: string) {
         context = new Context(name);
         return context;
 	}
 
 	static get() {
+		if (!context) {
+			throw new Error('Store initialization outside setup');
+		}
 		return context;
 	}
 }

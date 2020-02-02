@@ -1,26 +1,29 @@
 {
 	"compilerOptions": {
+		"jsx": "preserve",
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
-		"module": "commonjs",
+		"module": "esnext",
 		"moduleResolution": "node",
 		"declaration": true,
 		"removeComments": true,
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
-		"target": "es6",
+		"target": "esnext",
 		"sourceMap": true,
 		"outDir": "./dist",
 		"baseUrl": "./",
 		"incremental": true,
 		"lib": [
-			"es7",
-			"es2017",
-			"dom"
+			"esnext",
+			"dom",
+			"dom.iterable",
+			"scripthost"
 		]
 	},
 	"include": [
-		"src/**/*"
+		"src/**/*",
+		"index.ts"
 	],
 	"exclude": [
 		"node_modules",

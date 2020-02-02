@@ -1,27 +1,33 @@
 {
 	"name": "cargo",
-	"version": "0.0.1",
-	"description": "",
-	"author": "",
+	"version": "0.1.0",
+	"description": "Vue3 inspired simple store, compatible with vue-devtools",
+	"author": "wszerad91@gmail.com",
 	"license": "MIT",
 	"scripts": {
-		"dev": "ts-node-dev --respawn ./src/cargo.ts",
-		"start": "parcel serve example/index.html -d dist --public-url /dist/ --open"
+		"build": "tsc",
+		"example": "parcel serve example/index.html -d dist --public-url /dist-example/ --open"
 	},
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"dependencies": {
 		"@vue/reactivity": "^3.0.0-alpha.4",
 		"@vue/runtime-core": "^3.0.0-alpha.4",
-		"parcel-bundler": "^1.12.4",
-		"vue": "^2.6.11"
+		"typescript": "^3.7.4"
+	},
+	"peerDependencies": {
+		"@vue/reactivity": "^3.0.0-alpha.4",
+		"@vue/runtime-core": "^3.0.0-alpha.4"
 	},
 	"devDependencies": {
 		"@types/jest": "25.1.1",
 		"@types/node": "13.5.3",
 		"jest": "25.1.0",
 		"ts-jest": "25.1.0",
-		"ts-node-dev": "^1.0.0-pre.44",
 		"tslint": "6.0.0",
-		"typescript": "^3.7.4"
+		"parcel-bundler": "^1.12.4",
+		"vue": "^3.0.0-alpha.4",
+		"oldvue": "npm:vue@2.6.4"
 	},
 	"jest": {
 		"globals": {

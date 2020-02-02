@@ -28,7 +28,7 @@ export class RootStore {
 		this.generateFakeGetters(cargo);
 		this.generateFakeMutations(cargo);
 
-		this.fakeRootStore.registerModule(cargo.name, cargo);
+		this.fakeRootStore.registerModule(cargo.name, this.fakeRootStore);
 	}
 
 	unregisterModule(cargo: Context) {
@@ -38,6 +38,8 @@ export class RootStore {
 		this.generateFakeNamespaces(cargo, true);
 		this.generateFakeGetters(cargo, true);
 		this.generateFakeMutations(cargo, true);
+
+		this.fakeRootStore.unregisterModule(cargo.name);
 	}
 
 	private generateFakeState(context: Context, remove?: boolean) {

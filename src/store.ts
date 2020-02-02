@@ -1,13 +1,43 @@
-import { effect, isRef, Ref } from '@vue/reactivity';
+import { ComputedRef, isRef, Ref } from '@vue/reactivity';
+import { watch } from '@vue/runtime-core';
 import { useStoreDevtools } from './devtools';
 import { Context } from './Context';
-import { getter, metaType, mutation } from './wrappers';
+import { action, getter, metaType, MetaTypes, mutation } from './wrappers';
 
-export function store<T, R>(name: string, setup: (name: string) => T, actions: (state: T, name: string) => R = () => ({} as R)): T & R {
+export interface StateFactory {
+	[key: string]: Ref | ComputedRef | Function;
+}
+
+export interface ManagementFactory {
+	[key: string]: Function;
+}
+
+export function store<T extends StateFactory, R extends ManagementFactory>(name: string, stateFactory: (name: string) => T, managementFactory: (state: T, name: string) => R = () => ({} as R)): T & R {
 	const context = Context.init(name);
-	const instance = setupWrapper(setup(name));
+	const instance = setupWrapper(stateFactory(name));
+	const management = managementWrapper(managementFactory(instance, name));
 	useStoreDevtools(context);
-	return Object.assign(instance, actions(instance, name));
+	Context.clear();
+
+	return Object.assign({}, instance, management);
+}
+
+function managementWrapper<T>(exp: T): T {
+	return Object
+		.entries(exp)
+		.reduce((store, [key, field]) => {
+			if (typeof field === 'function') {
+				if (field[metaType] !== MetaTypes.Action) {
+					field = action(field.name || key, field);
+				}
+				// else ignore manual actions
+			} else {
+				throw new Error(`Field ${key} of ${Context.get().name} store have to be Function`);
+			}
+
+			store[key] = field;
+			return store;
+		}, {}) as any;
 }
 
 function setupWrapper<T>(exp: T): T {
@@ -21,10 +51,10 @@ function setupWrapper<T>(exp: T): T {
 					watchRef(key, field);
 				}
 			} else if (typeof field === 'function') {
-				if (isNaN(field[metaType])) {
-					field = mutation(key, field);
+				if (field[metaType] !== MetaTypes.Mutation) {
+					field = mutation(field.name || key, field);
 				}
-				// else ignore manual mutation and action
+				// else ignore manual mutation
 			} else {
 				throw new Error(`Field ${key} of ${Context.get().name} store have to be one of type(Ref, ComputedRef, Function)`);
 			}
@@ -36,21 +66,17 @@ function setupWrapper<T>(exp: T): T {
 
 function watchRef(key: string, ref: Ref<any>) {
 	const context = Context.get();
-	const runner = effect(() => ref.value, {
-		computed: true,
-		lazy: false,
-		scheduler(c) {
-			const value = runner();
-			if (!context.mutation && !context.replace) {
-				context.sendMutation({
-					type: key,
-					payload: value
-				});
-			}
-		}
-	});
 
-	context.refs[key] = ref;
+	watch(() => ref.value, (now) => {
+		if (!context.mutation && !context.replace) {
+			context.sendMutation({
+				type: key,
+				payload: now
+			});
+		}
+	}, {deep: true, flush: 'sync'});
+
+	context.refs.set(key, ref);
 	Object.defineProperty(context.instance, key, {
 		enumerable: true,
 		get() {

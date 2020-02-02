@@ -1,2 +1,13 @@
 # Project exclude paths
 /node_modules/
+.cache/
+.idea/.gitignore
+.idea/cargo.iml
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+dist/
+package-lock.json
+yarn-error.log
+yarn.lock
