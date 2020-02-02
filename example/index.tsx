@@ -1,6 +1,6 @@
-import { defineComponent, createApp, h } from 'vue';
+import { defineComponent, createApp, h, onUnmounted } from 'vue';
 import Vue from 'oldvue';
-import { shop } from './shop';
+import { useShop, unregisterShop } from './shop';
 
 // my JSX plugin :p
 const React = {
@@ -15,7 +15,12 @@ const React = {
 };
 
 const List = defineComponent({
+	setup() {
+		onUnmounted(() => unregisterShop());
+	},
 	render() {
+		const shop = useShop();
+
 		return (
 			<div>
 				Shop:

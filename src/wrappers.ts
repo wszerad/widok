@@ -1,11 +1,6 @@
+import { ComputedRef, Ref } from '@vue/reactivity';
+import { watch } from '@vue/runtime-core';
 import { Context } from './Context';
-import {ComputedRef} from '@vue/reactivity';
-
-export const metaType = Symbol('metaType');
-export enum MetaTypes {
-	Mutation,
-	Action
-}
 
 export function action(fuu: Function);
 export function action(type: string, fuu: Function);
@@ -15,16 +10,11 @@ export function action(...args) {
 		? args
 		: [args[0].name, args[0]];
 
-	if (!type) {
-		throw new Error('');
-	}
-
 	function action(payload) {
 		const ret = fuu(payload);
 		context.sendAction({type, payload});
 		return ret;
 	}
-	action[metaType] = MetaTypes.Action;
 
 	return action;
 }
@@ -33,19 +23,18 @@ export function mutation(type: string, fuu: Function) {
 	const context = Context.get();
 
 	function mutation(payload) {
-		const silent = context.mutation;
+		const silent = context.mutate;
 
-		context.mutation = true;
+		context.mutate = true;
 		const ret = fuu(payload);
 
 		if (!silent) {
 			context.sendMutation({type, payload});
-			context.mutation = false;
+			context.mutate = false;
 		}
 
 		return ret;
 	}
-	mutation[metaType] = MetaTypes.Mutation;
 
 	context.mutations.set(type, mutation);
 	return mutation;
@@ -54,4 +43,28 @@ export function mutation(type: string, fuu: Function) {
 export function getter(type: string, fuu: ComputedRef) {
 	Context.get().getters.set(type, fuu);
 	return fuu;
+}
+
+export function watchRef(key: string, ref: Ref) {
+	const context = Context.get();
+
+	context.refs.set(key, ref);
+	Object.defineProperty(context.state, key, {
+		enumerable: true,
+		get() {
+			return ref.value;
+		}
+	});
+
+	const teardown = watch(() => ref.value, (now) => {
+		if (!context.mutate && !context.replacing) {
+			context.sendMutation({
+				type: key,
+				payload: now
+			});
+		}
+	}, {deep: true, flush: 'sync'});
+	context.teardown.push(teardown);
+
+	return  ref;
 }

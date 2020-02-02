@@ -2,7 +2,7 @@ import { Context } from './Context';
 import { RootStore } from './RootStore';
 import { devtoolHook } from './utils';
 
-let rootStore;
+export let rootStore: RootStore;
 
 export function useStoreDevtools(context: Context) {
 	if (!devtoolHook) {

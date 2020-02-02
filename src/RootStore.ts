@@ -49,7 +49,7 @@ export class RootStore {
 			key: context.name,
 			def: {
 				get() {
-					return context.instance;
+					return context.state;
 				}
 			}
 		});

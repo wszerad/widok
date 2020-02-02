@@ -1,4 +1,4 @@
-# Cargo
+# Widok
 ```
 > Uses raw @vue/reactivity functions
 > Supports Vuex-devtools
@@ -11,59 +11,69 @@
 
 - Use @vue/reactivity functions: ref and computed to keep state
 - Define some mutation function (do not use async like in actions)
-- export flat object to export what you need
+- export flat object with what you need
 - after creation of store exported ref/computed/mutations will be decorated and watched for changes
 
 ## Usage
 
 ```typescript
-
-function cart(name: string) {
-	const list = ref<{id: string, name: string, price: number}[]>([]);
-	
-	function addProduct(product) {
-		list.value.push(product);
-	}
-
-	function removeProduct(product) {
-		const index = list.value.findIndex(item => item.id === product.id);
-		list.value.splice(index, 1);
-	}
-	
-	function clear() {
-		list.value = [];
-	}
-
-	const totalPrice = computed(() => {
-		return list.value.reduce((total, item) => item.price, 0);
-	});
-	
-	return { list, addProduct, removeProduct, clear, totalPrice };
+function cart() {
+    const list = ref<{id: string, name: string, price: number}[]>([]);
+    
+    function addProduct(product) {
+        list.value.push(product);
+    }
+    
+    function removeProduct(product) {
+        const index = list.value.findIndex(item => item.id === product.id);
+        list.value.splice(index, 1);
+    }
+    
+    function clear() {
+        list.value = [];
+    }
+    
+    const totalPrice = computed(() => {
+        return list.value.reduce((total, item) => item.price, 0);
+    });
+    
+    return { list, addProduct, removeProduct, clear, totalPrice };
 }
 
-function cartActions(cart: ReturnType<typeof cart>) {
-	return {
-		async order() {
-			await post('order', cart.list);
-			cart.clear();
-		}
-	};
+function cartActions(cart: ReturnType<typeof cart>, teardown: Function) {
+    const cancel = watch(cart.list, () => console.log('list change'), {deep: true});
+    
+    teardown(() => cancel());
+
+    return {
+        async order() {
+            await post('order', cart.list);
+            cart.clear();
+        }
+    };
 }
 
-const cartStore = store('cart', cart, cartActions);
-
+const [useCart, unregisteCart] = Widok.defineStore('cart', cart, cartActions);
 ```
 
 ## API
 
-### function store - create store module 
+### Widok.defineStore - create store and destroy hooks
 ```typescript
-store(
+Widok.defineStore(
     name: string,
-    stateFactory: (name: string) => T,
-    managementFactory: (state: T, name: string) => R
-): T & R
+    stateFactory: () => T,
+    managementFactory: (state: T, teardown: (cb: Function) => void) => R
+): [
+    () => T & R,
+    Function
+]
 ```
+
+* stateFactory - export ref, computed
+* managementFactory - export actions, define some logic with watch etc.
+
+### Widok.config({ dev: boolean = true }) - configuration
 
 ### ref
 > exported ref will be watched for changes

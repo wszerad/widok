@@ -1,7 +1,7 @@
-import { store, StateFactory, ManagementFactory } from './src/store';
+import { ManagementFactory, StateFactory, Widok } from './src/Widok';
 
 export {
-	store,
+	Widok,
 	StateFactory,
 	ManagementFactory
 };

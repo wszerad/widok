@@ -1,9 +1,12 @@
 {
-	"name": "cargo",
+	"name": "widok",
 	"version": "0.1.0",
 	"description": "Vue3 inspired simple store, compatible with vue-devtools",
 	"author": "wszerad91@gmail.com",
 	"license": "MIT",
+	"keywords": [
+		"vue", "vuex", "vue-devtools", "reactive", "redux", "store"
+	],
 	"scripts": {
 		"build": "tsc",
 		"example": "parcel serve example/index.html -d dist --public-url /dist-example/ --open"

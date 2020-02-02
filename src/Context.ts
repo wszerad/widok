@@ -1,37 +1,48 @@
 import { ComputedRef, Ref } from '@vue/reactivity';
-import { Action, Subscription } from './utils';
-import { Mutation } from './utils';
+import { rootStore } from './devtools';
+import { Action, Mutation, Subscription } from './utils';
 
 let context: Context = null;
+export const contexts = new Map<string, Context>();
 
 export class Context {
 	private _subscribe = new Subscription<Mutation>();
 	private _subscribeAction = new Subscription<Action>();
 
-	public replace = false;
-	public mutation = false;
-	public instance = {};
+	public replacing = false;
+	public mutate = false;
+
+	public instance = null;
+	public state = {};
 
 	public refs = new Map<string, Ref>();
 	public getters = new Map<string, ComputedRef>();
 	public mutations = new Map<string, Function>();
+	public teardown: Function[] = [];
 
 	constructor(
 		public name: string,
 	) {
 	}
 
-	get state() {
-		return this.instance;
+	destroy(){
+		this.teardown.forEach(fuu => fuu());
+		contexts.delete(this.name);
+
+		if (rootStore) {
+			rootStore.unregisterModule(this);
+		}
+
+		// stop getters??
 	}
 
 	replaceState(state: any) {
-		this.replace = true;
+		this.replacing = true;
 		Object.entries(state)
 			.forEach(([key, value]) => {
 				this.refs.get(key).value = value;
 			});
-		this.replace = false;
+		this.replacing = false;
 	}
 
 	sendAction(action: Action) {
@@ -50,13 +61,14 @@ export class Context {
 		this._subscribe.subscribe(cb);
 	}
 
-	static clear() {
-		context = null;
-	}
-
 	static init(name: string) {
         context = new Context(name);
         return context;
+	}
+
+	static setup(res: object) {
+		context.instance = res;
+		context = null;
 	}
 
 	static get() {

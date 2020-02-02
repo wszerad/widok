@@ -1,5 +1,5 @@
 import { computed, ref } from '@vue/reactivity';
-import { store } from '../src/store';
+import { Widok } from '../src/Widok';
 
 interface Item {
 	name: string;
@@ -23,7 +23,6 @@ function shopSetup() {
 	]);
 	const cart = ref<Item[]>([]);
 	const sending = ref<boolean>(false);
-	const test = ref([]);
 
 	function addToCart(addItem: Item) {
 		available.value = available.value.filter(item => item.name !== addItem.name);
@@ -53,8 +52,7 @@ function shopSetup() {
 		addToCart,
 		removeFromCart,
 		clearCart,
-		totalPrice,
-		test
+		totalPrice
 	};
 }
 
@@ -70,5 +68,4 @@ function shopManagement(state: ReturnType<typeof shopSetup>) {
 	};
 }
 
-export const shop = store('shop', shopSetup, shopManagement);
-console.log(shop);
+export const [useShop, unregisterShop] = Widok.defineStore('shop', shopSetup, shopManagement);
