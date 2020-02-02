@@ -1,6 +1,6 @@
 {
 	"name": "widok",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Vue3 inspired simple store, compatible with vue-devtools",
 	"author": "wszerad91@gmail.com",
 	"license": "MIT",
@@ -9,7 +9,8 @@
 		"vue", "vue3", "vuex", "vue-devtools", "reactive", "redux", "state", "typings"
 	],
 	"scripts": {
-		"prepublish": "tsc",
+		"prepublish": "npm run-script build",
+		"build": "tsc",
 		"example": "parcel serve example/index.html -d dist --public-url /dist-example/ --open"
 	},
 	"main": "dist/index.js",
