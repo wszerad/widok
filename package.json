@@ -1,15 +1,22 @@
 {
 	"name": "widok",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Vue3 inspired simple store, compatible with vue-devtools",
 	"author": "wszerad91@gmail.com",
 	"license": "MIT",
 	"repository": "https://github.com/wszerad/widok.git",
 	"keywords": [
-		"vue", "vue3", "vuex", "vue-devtools", "reactive", "redux", "state", "typings"
+		"vue",
+		"vue3",
+		"vuex",
+		"vue-devtools",
+		"reactive",
+		"redux",
+		"state",
+		"typings"
 	],
 	"scripts": {
-		"prepublish": "npm run-script build",
+		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "tsc",
 		"example": "parcel serve example/index.html -d dist --public-url /dist-example/ --open"
 	},
@@ -18,18 +25,18 @@
 	"dependencies": {
 		"@vue/reactivity": "^3.0.0-alpha.4",
 		"@vue/runtime-core": "^3.0.0-alpha.4",
-		"typescript": "^3.7.4"
+		"typescript": "^3.7.5"
 	},
 	"peerDependencies": {
 		"@vue/reactivity": "^3.0.0-alpha.4",
 		"@vue/runtime-core": "^3.0.0-alpha.4"
 	},
 	"devDependencies": {
-		"@types/jest": "25.1.1",
-		"@types/node": "13.5.3",
-		"jest": "25.1.0",
-		"ts-jest": "25.1.0",
-		"tslint": "6.0.0",
+		"@types/jest": "^25.1.1",
+		"@types/node": "^13.7.0",
+		"jest": "^25.1.0",
+		"ts-jest": "^25.1.0",
+		"tslint": "^6.0.0",
 		"parcel-bundler": "^1.12.4",
 		"vue": "^3.0.0-alpha.4",
 		"oldvue": "npm:vue@2.6.4"
