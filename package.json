@@ -1,10 +1,13 @@
 {
 	"name": "widok",
-	"version": "0.2.3",
+	"version": "0.2.4",
 	"description": "Vue3 inspired simple store, compatible with vue-devtools",
 	"author": "wszerad91@gmail.com",
 	"license": "MIT",
-	"repository": "https://github.com/wszerad/widok.git",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/wszerad/widok.git"
+	},
 	"keywords": [
 		"vue",
 		"vue3",
