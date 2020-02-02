@@ -1,6 +1,6 @@
 {
 	"name": "widok",
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"description": "Vue3 inspired simple store, compatible with vue-devtools",
 	"author": "wszerad91@gmail.com",
 	"license": "MIT",
@@ -16,8 +16,8 @@
 		"typings"
 	],
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "tsc",
+		"test": "echo \"No test specified\" && exit 0",
+		"build": "tsc --incremental false",
 		"example": "parcel serve example/index.html -d dist --public-url /dist-example/ --open"
 	},
 	"main": "dist/index.js",
@@ -32,34 +32,10 @@
 		"@vue/runtime-core": "^3.0.0-alpha.4"
 	},
 	"devDependencies": {
-		"@types/jest": "^25.1.1",
 		"@types/node": "^13.7.0",
-		"jest": "^25.1.0",
-		"ts-jest": "^25.1.0",
 		"tslint": "^6.0.0",
 		"parcel-bundler": "^1.12.4",
 		"vue": "^3.0.0-alpha.4",
 		"oldvue": "npm:vue@2.6.4"
-	},
-	"jest": {
-		"globals": {
-			"ts-jest": {
-				"isolatedModules": false,
-				"diagnostics": true
-			}
-		},
-		"preset": "ts-jest",
-		"moduleFileExtensions": [
-			"js",
-			"json",
-			"ts"
-		],
-		"rootDir": "src",
-		"testRegex": ".spec.ts$",
-		"transform": {
-			"^.+\\.(t|j)s$": "ts-jest"
-		},
-		"coverageDirectory": "../coverage",
-		"testEnvironment": "node"
 	}
 }
