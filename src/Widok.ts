@@ -1,5 +1,5 @@
 import { ComputedRef, Ref } from 'vue';
-import { EventBus } from 'src/EventBus';
+import { EventBus } from './EventBus';
 import { Context, contexts } from './Context';
 import { managementWrapper, setupWrapper } from './contructors';
 import { useStoreDevtools } from './devtools';
