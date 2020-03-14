@@ -1,4 +1,4 @@
-import { ComputedRef, Ref } from '@vue/reactivity';
+import { ComputedRef, Ref } from 'vue';
 import { rootStore } from './devtools';
 import { Action, Mutation, Subscription } from './utils';
 

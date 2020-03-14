@@ -1,4 +1,4 @@
-import { InjectionKey } from '@vue/runtime-core';
+import { InjectionKey } from 'vue';
 
 type EventBusListener<T> = (payload: T) => void;
 

@@ -1,5 +1,4 @@
-import { ComputedRef, Ref } from '@vue/reactivity';
-import { watch } from '@vue/runtime-core';
+import { ComputedRef, Ref, watch } from 'vue';
 import { Context } from './Context';
 
 export function action(fuu: Function);

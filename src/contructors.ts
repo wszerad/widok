@@ -1,4 +1,4 @@
-import { isRef } from '@vue/reactivity';
+import { isRef } from 'vue';
 import { Context } from './Context';
 import { action, getter, mutation, watchRef } from './wrappers';
 

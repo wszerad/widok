@@ -1,4 +1,4 @@
-import { computed, ref } from '@vue/reactivity';
+import { computed, ref } from 'vue';
 import { Widok } from '../src/Widok';
 
 interface Item {
