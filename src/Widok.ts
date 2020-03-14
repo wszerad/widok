@@ -1,4 +1,5 @@
 import { ComputedRef, Ref } from '@vue/reactivity';
+import { EventBus } from 'src/EventBus';
 import { Context, contexts } from './Context';
 import { managementWrapper, setupWrapper } from './contructors';
 import { useStoreDevtools } from './devtools';
@@ -15,6 +16,8 @@ const config = {
 	dev: true
 };
 
+const eventBus = new EventBus();
+
 export class Widok {
 	static config(options: Partial<typeof config>) {
 		Object.assign(config, options);
@@ -30,6 +33,10 @@ export class Widok {
 			destroyStore(name)
 		];
 	}
+
+	static emit = eventBus.emit.bind(eventBus);
+	static on = eventBus.on.bind(eventBus);
+	static once = eventBus.off.bind(eventBus);
 }
 
 function useStore<T>(name: string, s: Function, m: Function): () => T {

@@ -3,7 +3,7 @@
 > Uses raw @vue/reactivity functions
 > Supports Vuex-devtools
 > Minimal overhead
-> Allow directly state manipulation (without mutation)
+> Allow directly state manipulation (without using mutation)
 > Simple extending
 ```
 
@@ -74,6 +74,16 @@ Widok.defineStore(
 * managementFactory - export actions, define some logic with watch etc.
 
 ### Widok.config({ dev: boolean = true }) - configuration
+
+### Widok.emit(event: InjectionKet<any>) - emit to global event bus
+
+### Widok.on<T>(event: InjectionKet<T>, listener: (p: T) => void) - listen to events
+
+### Widok.once<T>(event: InjectionKet<T>, listener: (p: T) => void) - listen to events (once)
+
+### Widok.off(event?: InjectionKet<T>, listener?: (p: T) => void) - remove listeners all .off(), channel .off(event) or listener .off(event, listener)
+
+## Other info
 
 ### ref
 > exported ref will be watched for changes
