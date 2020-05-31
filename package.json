@@ -1,6 +1,6 @@
 {
 	"name": "widok",
-	"version": "0.2.8",
+	"version": "0.2.9",
 	"description": "Vue3 inspired simple store, compatible with vue-devtools",
 	"author": "wszerad91@gmail.com",
 	"license": "MIT",
@@ -20,22 +20,22 @@
 	],
 	"scripts": {
 		"test": "echo \"No test specified\" && exit 0",
-		"build": "tsc",
-		"example": "parcel serve example/index.html -d dist --public-url /dist-example/ --open"
+		"dev": "vite",
+		"build": "tsc"
 	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"dependencies": {},
 	"peerDependencies": {
-		"vue": "^3.0.0-alpha.10",
-		"typescript": "^3.8.3"
+		"vue": "^3.0.0-beta.14",
+		"typescript": "^3.9.3"
 	},
 	"devDependencies": {
-		"typescript": "^3.8.3",
-		"@types/node": "^13.9.8",
-		"tslint": "^6.1.0",
-		"parcel-bundler": "^1.12.4",
-		"vue": "^3.0.0-alpha.10",
+		"typescript": "^3.9.3",
+		"@types/node": "^14.0.6",
+		"eslint": "^7.1.0",
+		"vite": "^0.19.0",
+		"vue": "^3.0.0-beta.14",
 		"oldvue": "npm:vue@2.6.11"
 	}
 }

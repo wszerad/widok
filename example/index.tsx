@@ -1,18 +1,6 @@
-import { defineComponent, createApp, h, onUnmounted } from 'vue';
+import { defineComponent, createApp, onUnmounted } from 'vue';
 import Vue from 'oldvue';
 import { useShop, unregisterShop } from './shop';
-
-// my JSX plugin :p
-const React = {
-	createElement(el, ...children) {
-		let props = null;
-		if (children.length && children[0] && !children[0]._isVNode) {
-			props = children[0];
-			children = children.slice(1);
-		}
-		return h(el, props, children);
-	}
-};
 
 const List = defineComponent({
 	setup() {
