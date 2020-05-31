@@ -1,20 +1,22 @@
 import { defineComponent, createApp, onUnmounted } from 'vue';
 import Vue from 'oldvue';
-import { useShop, unregisterShop } from './shop';
+import { useShop } from './shop';
 
 const List = defineComponent({
 	setup() {
-		onUnmounted(() => unregisterShop());
-	},
-	render() {
 		const shop = useShop();
+		onUnmounted(shop.destroy);
+		return {shop};
+	},
+	render(ctx) {
+		const shop = ctx.shop;
 
 		return (
 			<div>
 				Shop:
 				<ul>
 					{
-						shop.available.value.map(i => (
+						shop.available.map(i => (
 							<li>{i.name} = {i.price} <span onClick={() => shop.addToCart(i)}>(+)</span></li>
 						))
 					}
@@ -23,14 +25,14 @@ const List = defineComponent({
 				Cart:
 				<ul>
 					{
-						shop.cart.value.map(i => (
+						shop.cart.map(i => (
 							<li>{i.name} = {i.price} <span onClick={() => shop.removeFromCart(i)}>(-)</span></li>
 						))
 					}
 				</ul>
-				<div>Cost: {shop.totalPrice.value}</div>
-				<div>{shop.totalPrice.value && !shop.sending.value ? <button onClick={() => shop.buy()}>Buy</button> : null}</div>
-				<div>{shop.sending.value ? 'shipping' : null}</div>
+				<div>Cost: {shop.totalPrice}</div>
+				<div>{shop.totalPrice && !shop.sending ? <button onClick={() => shop.buy()}>Buy</button> : null}</div>
+				<div>{shop.sending ? 'shipping' : null}</div>
 			</div>
 		);
 	}

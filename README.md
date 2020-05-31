@@ -40,10 +40,10 @@ function cart() {
     return { list, addProduct, removeProduct, clear, totalPrice };
 }
 
-function cartActions(cart: ReturnType<typeof cart>, teardown: Function) {
+function cartActions(cart: ReturnType<typeof cart>, teardown: (...cb: Function[]) => any) {
     const cancel = watch(cart.list, () => console.log('list change'), {deep: true});
     
-    teardown(() => cancel());
+    teardown(cancel, () => console.log('say bye!'));
 
     return {
         async order() {
@@ -53,7 +53,8 @@ function cartActions(cart: ReturnType<typeof cart>, teardown: Function) {
     };
 }
 
-const [useCart, unregisteCart] = Widok.defineStore('cart', cart, cartActions);
+const useCart = Widok.defineStore('cart', cart, cartActions);
+//useCart.destroy() to run teardown logic and delete instance
 ```
 
 ## API
@@ -63,15 +64,13 @@ const [useCart, unregisteCart] = Widok.defineStore('cart', cart, cartActions);
 Widok.defineStore(
     name: string,
     stateFactory: () => T,
-    managementFactory: (state: T, teardown: (cb: Function) => void) => R
-): [
-    () => T & R,
-    Function
-]
+    managementFactory: (state: T, teardown: (...cb: Function[]) => void) => R
+): () => T & R & {destroy: Function}
 ```
 
-* stateFactory - export ref, computed
-* managementFactory - export actions, define some logic with watch etc.
+* stateFactory - exports ref, computed
+* managementFactory - exports actions, define some logic with watch etc.
+* destroy - run teardown logic and delete instance
 
 ### Widok.config({ dev: boolean = true }) - configuration
 

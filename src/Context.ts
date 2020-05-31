@@ -18,7 +18,7 @@ export class Context {
 	public refs = new Map<string, Ref>();
 	public getters = new Map<string, ComputedRef>();
 	public mutations = new Map<string, Function>();
-	public teardown: Function[] = [];
+	public teardown = [];
 
 	constructor(
 		public name: string,
@@ -26,7 +26,7 @@ export class Context {
 	}
 
 	destroy(){
-		this.teardown.forEach(fuu => fuu());
+		this.teardown.forEach(action => action());
 		contexts.delete(this.name);
 
 		if (rootStore) {

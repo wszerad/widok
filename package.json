@@ -1,6 +1,6 @@
 {
 	"name": "widok",
-	"version": "0.2.9",
+	"version": "0.3.0",
 	"description": "Vue3 inspired simple store, compatible with vue-devtools",
 	"author": "wszerad91@gmail.com",
 	"license": "MIT",

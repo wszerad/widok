@@ -12,6 +12,9 @@ export interface ManagementFactory {
 	[key: string]: Function;
 }
 
+type WidokInstance<S extends StateFactory = StateFactory, M extends ManagementFactory
+	= ManagementFactory> = S & M & {destroy: Function};
+
 const config = {
 	dev: true
 };
@@ -27,11 +30,8 @@ export class Widok {
 		name: string,
 		stateFactory: () => T,
 		managementFactory: (state: T) => R = () => ({} as R)
-	): [() => T & R, Function] {
-		return [
-			useStore<T & R>(name, stateFactory, managementFactory),
-			destroyStore(name)
-		];
+	): () => WidokInstance<T, R> {
+		return useStore<WidokInstance<T, R>>(name, stateFactory, managementFactory);
 	}
 
 	static emit = eventBus.emit.bind(eventBus);
@@ -45,9 +45,15 @@ function useStore<T>(name: string, s: Function, m: Function): () => T {
 
 		if (!context) {
 			const context = Context.init(name);
+
+			const teardown = (...cb: Function[]) => context.teardown.push(...cb);
+			const destroy = () => {
+				context.destroy();
+			};
+
 			const state = setupWrapper(s());
-			const management = managementWrapper(m(state, teardownManagement));
-			const instance = Object.assign({}, state, management);
+			const management = managementWrapper(m(state, teardown));
+			const instance = Object.assign({}, state, management, {destroy});
 
 			contexts.set(name, context);
 			config.dev && useStoreDevtools(context);
@@ -58,19 +64,4 @@ function useStore<T>(name: string, s: Function, m: Function): () => T {
 
 		return context.instance;
 	}
-}
-
-function destroyStore(name: string) {
-	return () => {
-		const context = contexts.get(name);
-
-		if (context) {
-			context.destroy();
-		}
-	}
-}
-
-function teardownManagement(cb: Function) {
-	const context = contexts.get(name);
-	context.teardown.push(cb);
 }

@@ -68,4 +68,4 @@ function shopManagement(state: ReturnType<typeof shopSetup>) {
 	};
 }
 
-export const [useShop, unregisterShop] = Widok.defineStore('shop', shopSetup, shopManagement);
+export const useShop = Widok.defineStore('shop', shopSetup, shopManagement);
