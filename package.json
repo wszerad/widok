@@ -34,7 +34,7 @@
 		"typescript": "^3.9.3",
 		"@types/node": "^14.0.6",
 		"eslint": "^7.1.0",
-		"vite": "^0.19.0",
+		"vite": "^0.20.2",
 		"vue": "^3.0.0-beta.14",
 		"oldvue": "npm:vue@2.6.11"
 	}
