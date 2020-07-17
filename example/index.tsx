@@ -1,5 +1,4 @@
 import { defineComponent, createApp, onUnmounted } from 'vue';
-import Vue from 'oldvue';
 import { useShop } from './shop';
 
 const List = defineComponent({
@@ -39,7 +38,3 @@ const List = defineComponent({
 });
 
 createApp(List).mount('#app');
-
-new Vue({
-	template: '<span>Hello :D</span>'
-}).$mount('#fake-vue-element');

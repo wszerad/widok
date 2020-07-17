@@ -13,7 +13,7 @@ export interface ManagementFactory {
 }
 
 type WidokInstance<S extends StateFactory = StateFactory, M extends ManagementFactory
-	= ManagementFactory> = S & M & {destroy: Function};
+	= ManagementFactory> = S & M & {destroy: () => void};
 
 const config = {
 	dev: true
