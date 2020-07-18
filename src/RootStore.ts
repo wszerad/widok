@@ -1,45 +1,45 @@
-import { Context } from './Context';
-import { VuexFakeStore } from './VuexFakeStore';
+import { Context } from './Context'
+import { VuexFakeStore } from './VuexFakeStore'
 
 export function propertyDescription(as: { target: any, key: string, remove: boolean, def: any }) {
 	if (as.remove) {
-		delete as.target[as.key];
+		delete as.target[as.key]
 	} else {
 		Object.defineProperty(as.target, as.key, {
 			enumerable: true,
 			...as.def
-		});
+		})
 	}
 }
 
 export class RootStore {
-	modules = new Map<string, Context>();
-	fakeRootStore: VuexFakeStore;
+	modules = new Map<string, Context>()
+	fakeRootStore: VuexFakeStore
 
 	constructor() {
-		this.fakeRootStore = new VuexFakeStore(this);
+		this.fakeRootStore = new VuexFakeStore(this)
 	}
 
 	registerModule(cargo: Context) {
-		this.modules.set(cargo.name, cargo);
+		this.modules.set(cargo.name, cargo)
 
-		this.generateFakeState(cargo);
-		this.generateFakeNamespaces(cargo);
-		this.generateFakeGetters(cargo);
-		this.generateFakeMutations(cargo);
+		this.generateFakeState(cargo)
+		this.generateFakeNamespaces(cargo)
+		this.generateFakeGetters(cargo)
+		this.generateFakeMutations(cargo)
 
-		this.fakeRootStore.registerModule(cargo.name, this.fakeRootStore);
+		this.fakeRootStore.registerModule(cargo.name, this.fakeRootStore)
 	}
 
 	unregisterModule(cargo: Context) {
-		this.modules.delete(cargo.name);
+		this.modules.delete(cargo.name)
 
-		this.generateFakeState(cargo, true);
-		this.generateFakeNamespaces(cargo, true);
-		this.generateFakeGetters(cargo, true);
-		this.generateFakeMutations(cargo, true);
+		this.generateFakeState(cargo, true)
+		this.generateFakeNamespaces(cargo, true)
+		this.generateFakeGetters(cargo, true)
+		this.generateFakeMutations(cargo, true)
 
-		this.fakeRootStore.unregisterModule(cargo.name);
+		this.fakeRootStore.unregisterModule(cargo.name)
 	}
 
 	private generateFakeState(context: Context, remove?: boolean) {
@@ -49,10 +49,10 @@ export class RootStore {
 			key: context.name,
 			def: {
 				get() {
-					return context.state;
+					return context.state
 				}
 			}
-		});
+		})
 	}
 
 	private generateFakeNamespaces(context: Context, remove?: boolean) {
@@ -63,7 +63,7 @@ export class RootStore {
 			def: {
 				value: true
 			}
-		});
+		})
 	}
 
 	private generateFakeGetters(context: Context, remove?: boolean) {
@@ -74,11 +74,11 @@ export class RootStore {
 				key: `${context.name}/${key}`,
 				def: {
 					get() {
-						return getter.value;
+						return getter.value
 					}
 				}
-			});
-		});
+			})
+		})
 	}
 
 	private generateFakeMutations(context: Context, remove?: boolean) {
@@ -90,7 +90,7 @@ export class RootStore {
 				def: {
 					value: mutation
 				}
-			});
-		});
+			})
+		})
 	}
 }

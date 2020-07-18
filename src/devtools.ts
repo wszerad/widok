@@ -1,27 +1,27 @@
-import { Context } from './Context';
-import { RootStore } from './RootStore';
-import { devtoolHook } from './utils';
+import { Context } from './Context'
+import { RootStore } from './RootStore'
+import { devtools } from 'vue'
 
-export let rootStore: RootStore;
+export let rootStore: RootStore
 
 export function useStoreDevtools(context: Context) {
-	if (!devtoolHook) {
-		return;
+	if (!devtools) {
+		return
 	}
 
 	if (!rootStore) {
-		rootStore = new RootStore();
-		devtoolHook.emit('vuex:init', rootStore.fakeRootStore);
+		rootStore = new RootStore()
+		devtools.emit('vuex:init', rootStore.fakeRootStore)
 	}
 
-	rootStore.registerModule(context);
+	rootStore.registerModule(context)
 
-	devtoolHook.on('vuex:travel-to-state', targetState => {
-		context.replaceState(targetState[context.name]);
-	});
+	devtools.on('vuex:travel-to-state', targetState => {
+		context.replaceState(targetState[context.name])
+	})
 
 	context.subscribe((mutation, state) => {
-		devtoolHook.emit(
+		devtools.emit(
 			'vuex:mutation',
 			{
 				...mutation,

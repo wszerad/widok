@@ -4,7 +4,6 @@
 > Supports Vuex-devtools
 > Minimal overhead
 > Allow directly state manipulation (without using mutation)
-> Simple extending
 ```
 
 ## How it works
@@ -40,10 +39,11 @@ function cart() {
     return { list, addProduct, removeProduct, clear, totalPrice };
 }
 
-function cartActions(cart: ReturnType<typeof cart>, teardown: (...cb: Function[]) => any) {
+function cartActions(cart: ReturnType<typeof cart>) {
     const cancel = watch(cart.list, () => console.log('list change'), {deep: true});
     
-    teardown(cancel, () => console.log('say bye!'));
+    onDestroyWidok(() => console.log('say bye!'));
+    onDestroyWidok(cancel);
 
     return {
         async order() {
@@ -53,34 +53,32 @@ function cartActions(cart: ReturnType<typeof cart>, teardown: (...cb: Function[]
     };
 }
 
-const useCart = Widok.defineStore('cart', cart, cartActions);
-//useCart.destroy() to run teardown logic and delete instance
+const useCart = defineWidok('cart', cart, cartActions);
+//destroyWidok(useCart()) to run teardown logic and delete instance
 ```
 
 ## API
 
-### Widok.defineStore - create store and destroy hooks
+### defineWidok - create store and destroy hooks
 ```typescript
-Widok.defineStore(
+defineWidok(
     name: string,
     stateFactory: () => T,
-    managementFactory: (state: T, teardown: (...cb: Function[]) => void) => R
-): () => T & R & {destroy: Function}
+    managementFactory: (state: T) => R
+): () => T & R
 ```
 
-* stateFactory - exports ref, computed
-* managementFactory - exports actions, define some logic with watch etc.
-* destroy - run teardown logic and delete instance
+* stateFactory - export refs, computed, mutations (wrap reactive with toRefs)
+* managementFactory - exports actions, define here some logic with watch etc.
+* return "use hook" to instance
 
-### Widok.config({ dev: boolean = true }) - configuration
+### destroyWidok(WidokInstance) - unregister store and call onDestroyWidok hook
 
-### Widok.emit(event: InjectionKet<any>) - emit to global event bus
+### onDestroyWidok(teardown: () => any) - lifecycle hook 
 
-### Widok.on<T>(event: InjectionKet<T>, listener: (p: T) => void) - listen to events
+### configureWidok({ dev: boolean = true }) - set Widok configuration
 
-### Widok.once<T>(event: InjectionKet<T>, listener: (p: T) => void) - listen to events (once)
-
-### Widok.off(event?: InjectionKet<T>, listener?: (p: T) => void) - remove listeners all .off(), channel .off(event) or listener .off(event, listener)
+### isWidok(ref: any) - checks if is ref a Widok instance
 
 ## Other info
 
@@ -101,10 +99,9 @@ Widok.defineStore(
 > Dispatch __type__ is a function.name or fieldKey of export
 
 * dispatch name - `[${store name}] ${type}`
-* can not be created inside stateFactory because mutations are not decorated yet
+* cannot be created inside stateFactory because mutations are not decorated yet
 
 ## Limitations
 
-* __reactive__ is not supported
-* Vue@2.6 have to be mounted to enable vue-devtools
-* __New Vuex backend__ option do not work correctly
+* __reactive__ is not supported, call toRefs(reactive) instead
+* vue-devtools are not ready yet for vue@3

@@ -1,14 +1,15 @@
-import { defineComponent, createApp, onUnmounted } from 'vue';
-import { useShop } from './shop';
+import { destroyWidok } from '../index'
+import { defineComponent, createApp, onUnmounted } from 'vue'
+import { useShop } from './shop'
 
 const List = defineComponent({
 	setup() {
-		const shop = useShop();
-		onUnmounted(shop.destroy);
-		return {shop};
+		const shop = useShop()
+		onUnmounted(() => destroyWidok(shop))
+		return {shop}
 	},
 	render(ctx) {
-		const shop = ctx.shop;
+		const shop = ctx.shop
 
 		return (
 			<div>
@@ -33,8 +34,8 @@ const List = defineComponent({
 				<div>{shop.totalPrice && !shop.sending ? <button onClick={() => shop.buy()}>Buy</button> : null}</div>
 				<div>{shop.sending ? 'shipping' : null}</div>
 			</div>
-		);
+		)
 	}
-});
+})
 
-createApp(List).mount('#app');
+createApp(List).mount('#app')

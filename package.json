@@ -1,7 +1,7 @@
 {
 	"name": "widok",
-	"version": "0.3.1",
-	"description": "Vue3 inspired simple store, compatible with vue-devtools",
+	"version": "0.4.0",
+	"description": "Vue3 inspired simple store",
 	"author": "wszerad91@gmail.com",
 	"license": "MIT",
 	"repository": {
@@ -20,7 +20,7 @@
 	],
 	"scripts": {
 		"test": "echo \"No test specified\" && exit 0",
-		"dev": "vite",
+		"dev": "vite && start http://localhost:3000/example/index.html",
 		"build": "tsc"
 	},
 	"main": "dist/index.js",
