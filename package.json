@@ -19,7 +19,7 @@
 		"typings"
 	],
 	"scripts": {
-		"test": "echo \"No test specified\" && exit 0",
+		"test": "echo \"No test specified\" && exit 1",
 		"dev": "vite && start http://localhost:3000/example/index.html",
 		"build": "tsc"
 	},
