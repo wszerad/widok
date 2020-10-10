@@ -16,7 +16,7 @@ const List = defineComponent({
 				Shop:
 				<ul>
 					{
-						shop.available.map(i => (
+						shop.available.value.map(i => (
 							<li>{i.name} = {i.price} <span onClick={() => shop.addToCart(i)}>(+)</span></li>
 						))
 					}
@@ -25,14 +25,14 @@ const List = defineComponent({
 				Cart:
 				<ul>
 					{
-						shop.cart.map(i => (
+						shop.cart.value.map(i => (
 							<li>{i.name} = {i.price} <span onClick={() => shop.removeFromCart(i)}>(-)</span></li>
 						))
 					}
 				</ul>
-				<div>Cost: {shop.totalPrice}</div>
-				<div>{shop.totalPrice && !shop.sending ? <button onClick={() => shop.buy()}>Buy</button> : null}</div>
-				<div>{shop.sending ? 'shipping' : null}</div>
+				<div>Cost: {shop.totalPrice.value}</div>
+				<div>{shop.totalPrice.value && !shop.sending.value ? <button onClick={() => shop.buy()}>Buy</button> : null}</div>
+				<div>{shop.sending.value ? 'shipping' : null}</div>
 			</div>
 		)
 	}
