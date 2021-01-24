@@ -16,92 +16,40 @@
 ## Usage
 
 ```typescript
-function cart() {
-    const list = ref<{id: string, name: string, price: number}[]>([]);
-    
-    function addProduct(product) {
-        list.value.push(product);
-    }
-    
-    function removeProduct(product) {
-        const index = list.value.findIndex(item => item.id === product.id);
-        list.value.splice(index, 1);
-    }
-    
-    function clear() {
-        list.value = [];
-    }
-    
-    const totalPrice = computed(() => {
-        return list.value.reduce((total, item) => item.price, 0);
-    });
-    
-    return { list, addProduct, removeProduct, clear, totalPrice };
+// Widok instance
+import { createWidok } from 'widok';
+export const widok = createWidok();
+
+// main app
+const app = createApp(App);
+app.use(widok);
+
+// store
+class Shop {
+	cart = [];
+
+	get getCount() {
+		return this.cart.length;
+	};
+
+	addToCart(addItem: Item) {
+		this.cart.push(addItem);
+	}
+
+	@Action()
+	async buy() {
+		await fetch('cart/buy', this.cart);
+		this.cart.length = 0;
+	}
 }
 
-function cartActions(cart: ReturnType<typeof cart>) {
-    const cancel = watch(cart.list, () => console.log('list change'), {deep: true});
-    
-    onDestroyWidok(() => console.log('say bye!'));
-    onDestroyWidok(cancel);
-
-    return {
-        async order() {
-            await post('order', cart.list);
-            cart.clear();
-        }
-    };
-}
-
-const useCart = defineWidok('cart', cart, cartActions);
-//destroyWidok(useCart()) to run teardown logic and delete instance
+export const shop = widok(Shop);
 ```
 
 ## API
 
-### defineWidok - create store and destroy hooks
-```typescript
-defineWidok(
-    name: string,
-    stateFactory: () => T,
-    managementFactory: (state: T) => R
-): () => T & R
-```
+### createWidok - create Widok instance and return function(StoreClass, name?)
 
-* stateFactory - export refs, computed, mutations (wrap reactive with toRefs)
-* managementFactory - exports actions, define here some logic with watch etc.
-* return "use hook" to instance
+### @Action(name?) - If the method performs any async operation should be decorated with (it is only for proper devtools logging)
 
-### destroyWidok(WidokInstance) - unregister store and call onDestroyWidok hook
-
-### onDestroyWidok(teardown: () => any) - lifecycle hook 
-
-### configureWidok({ dev: boolean = true }) - set Widok configuration
-
-### isWidok(ref: any) - checks if is ref a Widok instance
-
-## Other info
-
-### ref
-> exported ref will be watched for changes
-
-* it is possible to mutating value outside __stateFactory__ and emit `[${store name}] ${ref fieldKey}`
-
-### mutations
-> mutations are created from function exported by __stateFactory__.
-> Commit __type__ is a function.name or fieldKey of export
-
-* commit name - `[${store name}] ${type}`
-* if you use mutation inside other mutation it will be one commit
-
-### actions
-> actions are created from function exported by __managementFactory__.
-> Dispatch __type__ is a function.name or fieldKey of export
-
-* dispatch name - `[${store name}] ${type}`
-* cannot be created inside stateFactory because mutations are not decorated yet
-
-## Limitations
-
-* __reactive__ is not supported, call toRefs(reactive) instead
-* vue-devtools are not ready yet for vue@3
+### @Patch(name?) - optional decorator, needed only to overwrite default name (extracted from function.name)

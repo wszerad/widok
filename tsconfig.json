@@ -7,7 +7,7 @@
 		"moduleResolution": "node",
 		"declaration": true,
 		"removeComments": true,
-		"emitDecoratorMetadata": true,
+		"emitDeclarationOnly": true,
 		"experimentalDecorators": true,
 		"target": "esnext",
 		"sourceMap": true,
@@ -19,7 +19,8 @@
 			"dom",
 			"dom.iterable",
 			"scripthost"
-		]
+		],
+		"types": ["vite/client"]
 	},
 	"include": [
 		"src/**/*",
