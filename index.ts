@@ -22,7 +22,7 @@ export function createWidok() {
 		}
 	}
 
-	function defineStore<T extends object>(StateFactory: { new (): T }, name: string): T {
+	function defineStore<T extends object>(StateFactory: { new (): T }, name?: string): T {
 		name = name || StateFactory.name;
 
 		const existingController = collector.controllers.get(name);
