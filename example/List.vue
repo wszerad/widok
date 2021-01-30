@@ -20,7 +20,7 @@
 						</li>
 				</ul>
 				<div>Cost: {{shop.totalPrice}}</div>
-				<div v-if='shop.totalPrice && shop.shosending'>
+				<div v-if='shop.totalPrice'>
 						<button @click='shop.buy()'>Buy</button>
 				</div>
 				<div v-if='shop.sending'>shipping</div>

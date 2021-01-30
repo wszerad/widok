@@ -63,7 +63,7 @@ export function addDevtools(app: App, collector: ControllerCollector) {
 								store: controller.name,
 								name: event.name,
 								type: event.type,
-								...(payload ? { payload } : {})
+								...(payload !== undefined ? { payload } : {})
 							},
 							// TODO: remove when fixed
 							meta: {},
