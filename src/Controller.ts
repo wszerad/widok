@@ -1,8 +1,7 @@
-import { ActionEvent } from './types/ActionEvent';
-import { PatchEvent } from './types/PatchEvent';
+import { StoreEvent } from './types/StoreEvent';
 import { Subscription } from './utils/Subscription';
 
-export class Controller<T> extends Subscription<ActionEvent | PatchEvent> {
+export class Controller<T> extends Subscription<StoreEvent> {
 	mutating = false;
 	replacing = false;
 	store: T;
@@ -15,11 +14,5 @@ export class Controller<T> extends Subscription<ActionEvent | PatchEvent> {
 
 	setup(store: T) {
 		this.store = store;
-	}
-
-	replaceState(state: T) {
-		this.replacing = true;
-		Object.assign(this.store, state);
-		this.replacing = false;
 	}
 }

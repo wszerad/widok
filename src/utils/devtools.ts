@@ -2,7 +2,11 @@ import { setupDevtoolsPlugin } from '@vue/devtools-api';
 import { App } from 'vue';
 import { Controller } from '../Controller';
 import { ControllerCollector } from '../ControllerCollector';
+import { ActionEvent } from '../types/ActionEvent';
 import { CreateControllerEvent } from '../types/CreateControllerEvent';
+import { PatchEvent } from '../types/PatchEvent';
+import { SetEvent } from '../types/SetEvent';
+import { StoreEvent } from '../types/StoreEvent';
 
 function formatPayload(payload: any[]) {
 	if (payload.length < 2) {
@@ -11,39 +15,46 @@ function formatPayload(payload: any[]) {
 	return payload;
 }
 
+const stateType = '🌄 Widok';
+
 export function addDevtools(app: App, collector: ControllerCollector) {
 	setupDevtoolsPlugin(
 		{
 			id: 'widok',
 			label: 'Widok',
+			packageName: 'widok',
+			homepage: 'https://github.com/wszerad/widok',
+			componentStateTypes: [
+				stateType
+			],
 			app,
 		},
 		(api) => {
-			api.on.inspectComponent((payload, ctx) => {
-				if (payload.instanceData) {
-					collector.controllers.forEach(controller => {
-						payload.instanceData.state.push({
-							type: '🌄 Widok',
-							key: controller.name,
-							editable: false,
-							value: controller.store,
-						});
-					});
-				}
-			});
+			// api.on.inspectComponent((payload, ctx) => {
+			// 	if (payload.instanceData) {
+			// 		collector.controllers.forEach(controller => {
+			// 			payload.instanceData.state.push({
+			// 				type: stateType,
+			// 				key: controller.name,
+			// 				editable: true,
+			// 				value: controller.store,
+			// 			});
+			// 		});
+			// 	}
+			// });
 
 			const layerId = 'widok:events';
 			const inspectorId = 'widok';
 
 			api.addTimelineLayer({
 				id: layerId,
-				label: `🌄 Widok`,
+				label: stateType,
 				color: 0xe5df88,
 			});
 
 			api.addInspector({
 				id: inspectorId,
-				label: 'Widok',
+				label: stateType,
 				icon: 'terrain',
 				treeFilterPlaceholder: 'Search stores',
 			});
@@ -55,18 +66,20 @@ export function addDevtools(app: App, collector: ControllerCollector) {
 					api.sendInspectorState(inspectorId);
 
 					const payload = formatPayload(event.payload);
+					const finishedAction = event instanceof ActionEvent && event.finished;
+
 					api.addTimelineEvent({
 						layerId: layerId,
 						event: {
+							groupId: event.uid,
 							time: Date.now(),
+							title: withEventTitlePrefix(event),
 							data: {
 								store: controller.name,
-								name: event.name,
 								type: event.type,
-								...(payload !== undefined ? { payload } : {})
-							},
-							// TODO: remove when fixed
-							meta: {},
+								name: event.name,
+								...(!finishedAction && payload !== undefined ? { payload } : {})
+							}
 						},
 					});
 				});
@@ -108,7 +121,7 @@ export function addDevtools(app: App, collector: ControllerCollector) {
 								.map(key => {
 									return {
 										key,
-										editable: false,
+										editable: true,
 										value: controller.store[key]
 									};
 								})
@@ -117,13 +130,30 @@ export function addDevtools(app: App, collector: ControllerCollector) {
 				}
 			});
 
-			// TODO add edit option
-			// api.on.editInspectorState(payload => {
-			// 	console.log(payload);
-			// });
+			api.on.editInspectorState(payload => {
+				if (payload.app === app && payload.inspectorId === inspectorId) {
+					const controller = collector.controllers.get(payload.nodeId);
+
+					if (controller) {
+						payload.set(controller.store, payload.path, payload.state.value);
+					}
+				}
+			});
 
 			// @ts-ignore
 			api.notifyComponentUpdate();
 		}
 	);
+}
+
+function withEventTitlePrefix(event: StoreEvent) {
+	if (event instanceof ActionEvent) {
+		return `${event.finished ? '🟧' : '🟠'} ${event.name}`;
+	}
+	if (event instanceof PatchEvent) {
+		return `🟢 ${event.name}`;
+	}
+	if (event instanceof SetEvent) {
+		return `🟡 ${event.name}`;
+	}
 }

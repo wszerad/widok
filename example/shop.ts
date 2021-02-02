@@ -46,12 +46,16 @@ class Shop {
 	}
 
 	@Action()
-	buy() {
+	async buy() {
 		this.sending = true;
 		this.clearCart();
-		window.setTimeout(() => {
-			this.sending = false;
-		}, 1000);
+
+		return new Promise((res, rej) => {
+			window.setTimeout(() => {
+				this.sending = false;
+				res(true);
+			}, 3000);
+		})
 	}
 }
 

@@ -20,7 +20,15 @@ export function prototypeOverwrite(proto: object, target: object, controller: Co
 					Object.defineProperty(target, key, {
 						value(...payload) {
 							const ret = descriptor.value.call(this, ...payload);
-							controller.next(new ActionEvent(action || key, payload));
+							const event = new ActionEvent(action || key, payload)
+							controller.next(event);
+
+							if (ret instanceof Promise) {
+								ret.finally(() => {
+									controller.next(event.end());
+								});
+							}
+
 							return ret;
 						}
 					});

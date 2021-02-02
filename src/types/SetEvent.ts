@@ -1,8 +1,5 @@
+import { StoreEvent } from './StoreEvent';
 
-export class SetEvent<T = any> {
-	constructor(
-		public name: string,
-		public payload: T,
-		public type = 'Set',
-	) {}
+export class SetEvent<T = any> extends StoreEvent<T> {
+	type = 'Set';
 }

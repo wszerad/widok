@@ -69,6 +69,6 @@ Decorator, if the method performs any async operation should be decorated with (
 
 ## Events
 
-* ActionEvent = Action
-* PatchEvent = Patch
+* ActionEvent = some async activities (trigger PatchEvens or SetEvents)
+* PatchEvent = grouped values change
 * SetEvent = directly value change

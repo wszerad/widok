@@ -1,8 +1,11 @@
+import { StoreEvent } from './StoreEvent';
 
-export class ActionEvent<T = any> {
-	constructor(
-		public name: string,
-		public payload: T,
-		public type = 'Action',
-	) {}
+export class ActionEvent<T = any> extends StoreEvent<T> {
+	finished = false;
+	type = 'Action'
+
+	end() {
+		this.finished = true;
+		return this;
+	}
 }
