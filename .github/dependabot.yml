@@ -1,0 +1,81 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: "@types/node"
+    versions:
+    - 14.14.22
+    - 14.14.24
+    - 14.14.25
+    - 14.14.26
+    - 14.14.28
+    - 14.14.30
+    - 14.14.31
+    - 14.14.32
+    - 14.14.33
+    - 14.14.34
+    - 14.14.35
+    - 14.14.36
+    - 14.14.37
+    - 14.14.39
+    - 14.14.41
+    - 15.0.0
+  - dependency-name: vite
+    versions:
+    - 2.0.0
+    - 2.0.0-beta.52
+    - 2.0.0-beta.56
+    - 2.0.0-beta.60
+    - 2.0.0-beta.61
+    - 2.0.0-beta.62
+    - 2.0.0-beta.64
+    - 2.0.0-beta.65
+    - 2.0.0-beta.66
+    - 2.0.0-beta.67
+    - 2.0.0-beta.69
+    - 2.0.0-beta.70
+    - 2.0.1
+    - 2.0.2
+    - 2.0.3
+    - 2.0.4
+    - 2.0.5
+    - 2.1.0
+    - 2.1.1
+    - 2.1.2
+    - 2.1.3
+    - 2.1.4
+    - 2.1.5
+    - 2.2.1
+  - dependency-name: eslint
+    versions:
+    - 7.18.0
+    - 7.19.0
+    - 7.20.0
+    - 7.21.0
+    - 7.22.0
+    - 7.23.0
+    - 7.24.0
+  - dependency-name: vue
+    versions:
+    - 3.0.10
+    - 3.0.6
+    - 3.0.7
+    - 3.0.9
+  - dependency-name: typescript
+    versions:
+    - 4.1.3
+    - 4.1.4
+    - 4.1.5
+    - 4.2.2
+    - 4.2.3
+  - dependency-name: "@vue/devtools-api"
+    versions:
+    - 6.0.0-beta.5
+    - 6.0.0-beta.7
+  - dependency-name: "@vitejs/plugin-vue"
+    versions:
+    - 1.1.2
